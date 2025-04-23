@@ -1,32 +1,26 @@
 import { useEffect, useState } from 'react';
 import Wheel from '../components/Wheel';
-import { useDarkMode } from '../context/DarkModeContext';
 import styles from '../styles/Home.module.css';
 
 const Home = () => {
-  const { darkMode } = useDarkMode(); // Use global dark mode state
-  const [values, setValues] = useState([
-    'Value 1',
-    'Value 2',
-    'Value 3',
-    'Value 4',
-  ]);
-  const [backgroundImage, setBackgroundImage] = useState<string | null>(null);
+  const [values, setValues] = useState<string[]>([]);
+  const [titles, setTitles] = useState<string[]>([]);
 
   useEffect(() => {
-    const savedImage = localStorage.getItem('backgroundImage');
-    if (savedImage) {
-      setBackgroundImage(savedImage);
-    }
+    // Fetch genres and titles from the API
+    const fetchData = async () => {
+      const response = await fetch('/api/genres');
+      const data = await response.json();
+      setValues(data.genres); // Set genres for the wheel
+      setTitles(data.titles); // Set titles
+      console.log('Show Titles:', data.titles); // Log the titles
+    };
+
+    fetchData();
   }, []);
 
   return (
-    <div
-      className={`${styles.container} ${!darkMode ? styles.light : ''}`}
-      style={{
-        backgroundImage: backgroundImage ? `url(${backgroundImage})` : 'none',
-      }}
-    >
+    <div className={styles.container}>
       <h1 className={styles.title}>Spin the Wheel</h1>
       <Wheel items={values} />
     </div>
