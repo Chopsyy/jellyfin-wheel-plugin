@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
-import styles from '../styles/Wheel.module.css';
+import React, { useState } from "react";
+import styles from "../styles/Wheel.module.css";
 
 interface WheelProps {
-  items: string[]; // Explicitly define that items is an array of strings
+  items: string[];
 }
 
 const Wheel: React.FC<WheelProps> = ({ items }) => {
   const [spinning, setSpinning] = useState(false);
-  const [selectedItem, setSelectedItem] = useState<string | null>(null); // Selected item is either a string or null
+  const [selectedItem, setSelectedItem] = useState<string | null>(null);
+  const [rotation, setRotation] = useState(0);
+  const [animationStyle, setAnimationStyle] = useState({});
 
   const spinWheel = () => {
     if (spinning) return;
@@ -15,21 +17,55 @@ const Wheel: React.FC<WheelProps> = ({ items }) => {
     setSpinning(true);
     const randomIndex = Math.floor(Math.random() * items.length);
     const selected = items[randomIndex];
+    const spins = 5; // Number of full spins
+    const sliceAngle = 360 / items.length;
+    const randomRotation = spins * 360 + randomIndex * sliceAngle;
+
+    const newRotation = rotation + randomRotation;
+
+    // Set animation style for smooth spinning
+    setAnimationStyle({
+      transition: "transform 3s ease-out",
+      transform: `rotate(${newRotation}deg)`,
+    });
 
     setTimeout(() => {
+      setRotation(newRotation % 360); // Normalize rotation to avoid overflow
+      setAnimationStyle({}); // Clear animation style after spinning
       setSelectedItem(selected);
       setSpinning(false);
-    }, 3000); // Simulate spinning duration
+    }, 3000); // Match the animation duration
   };
+
+  // Dynamically generate the conic-gradient for the wheel
+  const gradientColors = [
+    "#ffcccb",
+    "#add8e6",
+    "#90ee90",
+    "#ffa07a",
+    "#f4a460",
+    "#dda0dd",
+  ];
+  const gradient = items
+    .map((_, index) => {
+      const color = gradientColors[index % gradientColors.length];
+      const start = (index * 100) / items.length;
+      const end = ((index + 1) * 100) / items.length;
+      return `${color} ${start}% ${end}%`;
+    })
+    .join(", ");
 
   return (
     <div className={styles.wheelContainer}>
-      <div className={styles.wheel} onClick={spinWheel}>
-        {items.map((item, index) => (
-          <div key={index} className={styles.wheelItem}>
-            {item}
-          </div>
-        ))}
+      <div
+        className={styles.wheel}
+        style={{
+          ...animationStyle,
+          background: `conic-gradient(${gradient})`,
+        }}
+        onClick={spinWheel}
+      >
+        {/* Removed values from slices */}
       </div>
       {selectedItem && (
         <div className={styles.result}>Selected: {selectedItem}</div>
@@ -39,8 +75,18 @@ const Wheel: React.FC<WheelProps> = ({ items }) => {
         onClick={spinWheel}
         disabled={spinning}
       >
-        {spinning ? 'Spinning...' : 'Spin the Wheel!'}
+        {spinning ? "Spinning..." : "Spin the Wheel!"}
       </button>
+      <ul className={styles.itemList}>
+        {items.map((item, index) => (
+          <li
+            key={index}
+            style={{ color: gradientColors[index % gradientColors.length] }}
+          >
+            {item}
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };
