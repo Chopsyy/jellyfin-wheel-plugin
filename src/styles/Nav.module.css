@@ -1,0 +1,35 @@
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #333;
+  color: #fff;
+}
+
+.link {
+  color: #fff;
+  text-decoration: none;
+  font-size: 18px;
+  margin-right: 20px;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+.toggleButton {
+  background-color: transparent;
+  border: 2px solid #fff;
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.toggleButton:hover {
+  background-color: #fff;
+  color: #333;
+}

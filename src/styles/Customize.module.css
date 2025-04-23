@@ -1,0 +1,59 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 20px;
+  background-size: cover; /* Ensure the image stretches to cover the container */
+  background-position: center; /* Center the image */
+  background-repeat: no-repeat; /* Prevent duplication */
+  font-family: Arial, sans-serif;
+}
+
+.title {
+  font-size: 2.5rem;
+  color: inherit;
+  margin-bottom: 20px;
+}
+
+.fileInput {
+  margin-top: 20px;
+  padding: 10px;
+  font-size: 16px;
+}
+
+.urlInputContainer {
+  display: flex;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.urlInput {
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-right: 10px;
+  width: 300px;
+}
+
+.submitButton {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #0070f3;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.submitButton:hover {
+  background-color: #005bb5;
+}
+
+.note {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #ccc;
+}

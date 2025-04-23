@@ -1,0 +1,26 @@
+{
+  "name": "jellyfin-wheel-plugin",
+  "version": "1.0.0",
+  "description": "A Jellyfin plugin that allows users to spin a wheel with pre-entered values for random selection.",
+  "main": "src/index.ts",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "next": "latest",
+    "react": "latest",
+    "react-dom": "latest"
+  },
+  "devDependencies": {
+    "@types/node": "22.14.1",
+    "@types/react": "19.1.2",
+    "eslint": "latest",
+    "eslint-config-next": "latest",
+    "typescript": "latest"
+  },
+  "license": "MIT",
+  "author": "Your Name"
+}

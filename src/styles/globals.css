@@ -1,0 +1,54 @@
+/* This file contains global CSS styles for the application, defining the overall look and feel. */
+
+body {
+  margin: 0; /* Ensure no white stripe around the body */
+  padding: 0; /* Remove any default padding */
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, sans-serif;
+  background-color: #333; /* Default to dark mode */
+  color: #fff;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+body.light {
+  background-color: #f0f0f0; /* Light mode background */
+  color: #333; /* Light mode text color */
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+  padding: 0;
+}
+
+a {
+  color: #0070f3;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.button {
+  background-color: #0070f3;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.button:hover {
+  background-color: #005bb5;
+}
