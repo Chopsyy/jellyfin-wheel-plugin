@@ -51,7 +51,10 @@ const Wheel: React.FC<WheelProps> = ({ items }) => {
       const color = gradientColors[index % gradientColors.length];
       const start = (index * 100) / items.length;
       const end = ((index + 1) * 100) / items.length;
-      return `${color} ${start}% ${end}%`;
+      const borderGap = 0.5; // Adjust this value for the border thickness
+      return `${color} ${start}% ${end - borderGap}%, black ${
+        end - borderGap
+      }% ${end}%`;
     })
     .join(", ");
 
