@@ -4,7 +4,7 @@
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  padding: 20px;
+  padding: 0 2rem;
   background-size: cover; /* Ensure the image stretches to cover the container */
   background-position: center; /* Center the image */
   background-repeat: no-repeat; /* Prevent duplication */
@@ -17,10 +17,20 @@
   color: #333; /* Light mode text color */
 }
 
+.wheelsContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  width: 100%;
+  max-width: 1200px;
+  margin-top: 2rem;
+}
+
 .title {
   font-size: 2.5rem;
+  text-align: center;
+  margin-bottom: 2rem;
   color: inherit;
-  margin-bottom: 20px;
 }
 
 .subtitle {

@@ -1,11 +1,20 @@
 import React, { useState } from "react";
 import styles from "../styles/Wheel.module.css";
 
+const gradientColorsSecondWheel = [
+  "#ffeb3b", // Yellow
+  "#8bc34a", // Light Green
+  "#00bcd4", // Cyan
+  "#9c27b0", // Purple
+  "#ff5722", // Deep Orange
+  "#607d8b", // Blue Grey
+];
+
 interface WheelProps {
   items: string[];
 }
 
-const Wheel: React.FC<WheelProps> = ({ items }) => {
+const SecondWheel: React.FC<WheelProps> = ({ items }) => {
   const [spinning, setSpinning] = useState(false);
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
   const [rotation, setRotation] = useState(0);
@@ -38,17 +47,10 @@ const Wheel: React.FC<WheelProps> = ({ items }) => {
   };
 
   // Dynamically generate the conic-gradient for the wheel
-  const gradientColors = [
-    "#ffcccb",
-    "#add8e6",
-    "#90ee90",
-    "#ffa07a",
-    "#f4a460",
-    "#dda0dd",
-  ];
   const gradient = items
     .map((_, index) => {
-      const color = gradientColors[index % gradientColors.length];
+      const color =
+        gradientColorsSecondWheel[index % gradientColorsSecondWheel.length];
       const start = (index * 100) / items.length;
       const end = ((index + 1) * 100) / items.length;
       return `${color} ${start}% ${end}%`;
@@ -75,13 +77,18 @@ const Wheel: React.FC<WheelProps> = ({ items }) => {
         onClick={spinWheel}
         disabled={spinning}
       >
-        {spinning ? "Spinning..." : "Spin the Wheel!"}
+        {spinning ? "Spinning..." : "Spin the Second Wheel!"}
       </button>
       <ul className={styles.itemList}>
         {items.map((item, index) => (
           <li
             key={index}
-            style={{ color: gradientColors[index % gradientColors.length] }}
+            style={{
+              color:
+                gradientColorsSecondWheel[
+                  index % gradientColorsSecondWheel.length
+                ],
+            }}
           >
             {item}
           </li>
@@ -91,4 +98,4 @@ const Wheel: React.FC<WheelProps> = ({ items }) => {
   );
 };
 
-export { Wheel };
+export default SecondWheel;

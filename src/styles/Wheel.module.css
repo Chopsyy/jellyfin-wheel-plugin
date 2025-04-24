@@ -1,9 +1,8 @@
 .wheelContainer {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  margin-top: 50px;
+  /* align-items: center; */
+  /* justify-content: center; */
 }
 
 .wheel {
@@ -31,11 +30,20 @@
   height: 50%;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-end; /* Align text to the bottom of the slice */
   transform-origin: 100% 100%;
   font-size: 14px;
   font-weight: bold;
-  color: #000;
+  color: inherit; /* Inherit the color of the slice */
+  text-align: center;
+  overflow: hidden;
+}
+
+.wheelItem > div {
+  width: 100%;
+  text-align: center;
+  transform-origin: center;
+  writing-mode: horizontal-tb; /* Ensure text is horizontal */
 }
 
 .result {
