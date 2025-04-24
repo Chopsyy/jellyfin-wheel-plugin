@@ -1,149 +1,171 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Wheel } from "../components/Wheel";
 import SecondWheel from "../components/SecondWheel";
 import styles from "../styles/Home.module.css";
 
 const Home = () => {
-  const [wheel1Items, setWheel1Items] = useState<string[]>([]);
-  const [wheel2Items, setWheel2Items] = useState<string[]>([]);
+  const [wheels, setWheels] = useState<
+    | {
+        id: number;
+        items: string[];
+        availableItems: string[];
+        inputValue: string;
+      }[]
+    | null
+  >(null);
 
-  const [inputValue1, setInputValue1] = useState("");
-  const [inputValue2, setInputValue2] = useState("");
-  const [availableItems1, setAvailableItems1] = useState<string[]>([
-    "Action",
-    "Comedy",
-    "Drama",
-  ]);
-  const [availableItems2, setAvailableItems2] = useState<string[]>([
-    "Horror",
-    "Sci-Fi",
-    "Fantasy",
-  ]);
-
-  const handleAddItem = (wheel: number) => {
-    if (
-      wheel === 1 &&
-      inputValue1.trim() &&
-      !availableItems1.includes(inputValue1)
-    ) {
-      setAvailableItems1([...availableItems1, inputValue1]);
-      setWheel1Items([...wheel1Items, inputValue1]); // Automatically check the new item
-      setInputValue1("");
-    } else if (
-      wheel === 2 &&
-      inputValue2.trim() &&
-      !availableItems2.includes(inputValue2)
-    ) {
-      setAvailableItems2([...availableItems2, inputValue2]);
-      setWheel2Items([...wheel2Items, inputValue2]); // Automatically check the new item
-      setInputValue2("");
+  useEffect(() => {
+    const savedWheels = localStorage.getItem("wheels");
+    if (savedWheels) {
+      try {
+        setWheels(JSON.parse(savedWheels));
+      } catch (error) {
+        console.error("Failed to parse wheels from localStorage:", error);
+        setWheels([
+          { id: 1, items: [], availableItems: [], inputValue: "" },
+          { id: 2, items: [], availableItems: [], inputValue: "" },
+        ]);
+      }
+    } else {
+      setWheels([
+        { id: 1, items: [], availableItems: [], inputValue: "" },
+        { id: 2, items: [], availableItems: [], inputValue: "" },
+      ]);
     }
+  }, []);
+
+  useEffect(() => {
+    if (wheels !== null) {
+      try {
+        localStorage.setItem("wheels", JSON.stringify(wheels));
+      } catch (error) {
+        console.error("Failed to save wheels to localStorage:", error);
+      }
+    }
+  }, [wheels]);
+
+  if (wheels === null) {
+    return <div>Loading...</div>; // Prevent rendering until wheels are initialized
+  }
+
+  const handleAddItem = (wheelId: number) => {
+    setWheels((prevWheels) => {
+      if (!prevWheels) return []; // Handle null case
+
+      const updatedWheels = prevWheels.map((wheel) =>
+        wheel.id === wheelId &&
+        wheel.inputValue.trim() &&
+        !wheel.availableItems.includes(wheel.inputValue)
+          ? {
+              ...wheel,
+              availableItems: [...wheel.availableItems, wheel.inputValue],
+              items: [...wheel.items, wheel.inputValue],
+              inputValue: "",
+            }
+          : wheel
+      );
+
+      localStorage.setItem("wheels", JSON.stringify(updatedWheels)); // Save to local storage immediately
+      return updatedWheels;
+    });
   };
 
   const handleKeyPress = (
     event: React.KeyboardEvent<HTMLInputElement>,
-    wheel: number
+    wheelId: number
   ) => {
     if (event.key === "Enter") {
-      handleAddItem(wheel);
+      handleAddItem(wheelId);
     }
   };
 
-  const handleCheckboxChange = (item: string, wheel: number) => {
-    if (wheel === 1) {
-      setWheel1Items((prev) =>
-        prev.includes(item) ? prev.filter((i) => i !== item) : [...prev, item]
+  const handleCheckboxChange = (item: string, wheelId: number) => {
+    setWheels((prevWheels) => {
+      if (!prevWheels) return []; // Handle null case
+
+      return prevWheels.map((wheel) =>
+        wheel.id === wheelId
+          ? {
+              ...wheel,
+              items: wheel.items.includes(item)
+                ? wheel.items.filter((i) => i !== item)
+                : [...wheel.items, item],
+            }
+          : wheel
       );
-    } else {
-      setWheel2Items((prev) =>
-        prev.includes(item) ? prev.filter((i) => i !== item) : [...prev, item]
-      );
-    }
+    });
   };
 
-  const handleDeleteItem = (item: string, wheel: number) => {
-    if (wheel === 1) {
-      setAvailableItems1((prev) => prev.filter((i) => i !== item));
-      setWheel1Items((prev) => prev.filter((i) => i !== item));
-    } else {
-      setAvailableItems2((prev) => prev.filter((i) => i !== item));
-      setWheel2Items((prev) => prev.filter((i) => i !== item));
-    }
+  const handleDeleteItem = (item: string, wheelId: number) => {
+    setWheels((prevWheels) => {
+      if (!prevWheels) return []; // Handle null case
+
+      return prevWheels.map((wheel) =>
+        wheel.id === wheelId
+          ? {
+              ...wheel,
+              availableItems: wheel.availableItems.filter((i) => i !== item),
+              items: wheel.items.filter((i) => i !== item),
+            }
+          : wheel
+      );
+    });
+  };
+
+  const handleInputChange = (value: string, wheelId: number) => {
+    setWheels((prevWheels) => {
+      if (!prevWheels) return []; // Handle null case
+
+      return prevWheels.map((wheel) =>
+        wheel.id === wheelId ? { ...wheel, inputValue: value } : wheel
+      );
+    });
   };
 
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Customize Your Wheels</h1>
       <div className={styles.wrapper}>
-        <div className={styles.wheelSection}>
-          <h2>Genre</h2>
-          <div className={styles.inputContainer}>
-            <input
-              type="text"
-              value={inputValue1}
-              onChange={(e) => setInputValue1(e.target.value)}
-              onKeyPress={(e) => handleKeyPress(e, 1)}
-              placeholder="Add a new item for Wheel 1"
-            />
-            <button onClick={() => handleAddItem(1)}>Add</button>
+        {wheels.map((wheel) => (
+          <div key={wheel.id} className={styles.wheelSection}>
+            <h2>Wheel {wheel.id}</h2>
+            <div className={styles.inputContainer}>
+              <input
+                type="text"
+                value={wheel.inputValue}
+                onChange={(e) => handleInputChange(e.target.value, wheel.id)}
+                onKeyPress={(e) => handleKeyPress(e, wheel.id)}
+                placeholder={`Add a new item for Wheel ${wheel.id}`}
+              />
+              <button onClick={() => handleAddItem(wheel.id)}>Add</button>
+            </div>
+            <div className={styles.checkboxContainer}>
+              {wheel.availableItems.map((item) => (
+                <div key={item} className={styles.checkboxItem}>
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={wheel.items.includes(item)}
+                      onChange={() => handleCheckboxChange(item, wheel.id)}
+                    />
+                    {item}
+                  </label>
+                  <button
+                    onClick={() => handleDeleteItem(item, wheel.id)}
+                    className={styles.deleteButton}
+                  >
+                    Delete
+                  </button>
+                </div>
+              ))}
+            </div>
+            {wheel.id === 1 ? (
+              <Wheel items={wheel.items} />
+            ) : (
+              <SecondWheel items={wheel.items} />
+            )}
           </div>
-          <div className={styles.checkboxContainer}>
-            {availableItems1.map((item) => (
-              <div key={item} className={styles.checkboxItem}>
-                <label>
-                  <input
-                    type="checkbox"
-                    checked={wheel1Items.includes(item)}
-                    onChange={() => handleCheckboxChange(item, 1)}
-                  />
-                  {item}
-                </label>
-                <button
-                  onClick={() => handleDeleteItem(item, 1)}
-                  className={styles.deleteButton}
-                >
-                  Delete
-                </button>
-              </div>
-            ))}
-          </div>
-          <Wheel items={wheel1Items} />
-        </div>
-
-        <div className={styles.wheelSection}>
-          <h2>Qualität</h2>
-          <div className={styles.inputContainer}>
-            <input
-              type="text"
-              value={inputValue2}
-              onChange={(e) => setInputValue2(e.target.value)}
-              onKeyPress={(e) => handleKeyPress(e, 2)}
-              placeholder="Add a new item for Wheel 2"
-            />
-            <button onClick={() => handleAddItem(2)}>Add</button>
-          </div>
-          <div className={styles.checkboxContainer}>
-            {availableItems2.map((item) => (
-              <div key={item} className={styles.checkboxItem}>
-                <label>
-                  <input
-                    type="checkbox"
-                    checked={wheel2Items.includes(item)}
-                    onChange={() => handleCheckboxChange(item, 2)}
-                  />
-                  {item}
-                </label>
-                <button
-                  onClick={() => handleDeleteItem(item, 2)}
-                  className={styles.deleteButton}
-                >
-                  Delete
-                </button>
-              </div>
-            ))}
-          </div>
-          <SecondWheel items={wheel2Items} />
-        </div>
+        ))}
       </div>
     </div>
   );
