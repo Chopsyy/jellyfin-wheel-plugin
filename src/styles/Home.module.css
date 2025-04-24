@@ -53,3 +53,23 @@
 .toggleButton:hover {
   background-color: #005bb5;
 }
+
+.wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  border: 2px solid #ccc;
+  padding: 20px;
+  border-radius: 10px;
+  background-color: #f9f9f9;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.wheelSection {
+  margin-bottom: 40px;
+  background-color: #333; /* Match dark mode background */
+  padding: 20px;
+  border-radius: 10px;
+}
