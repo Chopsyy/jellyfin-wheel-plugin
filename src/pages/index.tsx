@@ -90,12 +90,14 @@ const Home = () => {
           <div className={styles.checkboxContainer}>
             {availableItems1.map((item) => (
               <div key={item} className={styles.checkboxItem}>
-                <input
-                  type="checkbox"
-                  checked={wheel1Items.includes(item)}
-                  onChange={() => handleCheckboxChange(item, 1)}
-                />
-                {item}
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={wheel1Items.includes(item)}
+                    onChange={() => handleCheckboxChange(item, 1)}
+                  />
+                  {item}
+                </label>
                 <button
                   onClick={() => handleDeleteItem(item, 1)}
                   className={styles.deleteButton}
@@ -123,12 +125,14 @@ const Home = () => {
           <div className={styles.checkboxContainer}>
             {availableItems2.map((item) => (
               <div key={item} className={styles.checkboxItem}>
-                <input
-                  type="checkbox"
-                  checked={wheel2Items.includes(item)}
-                  onChange={() => handleCheckboxChange(item, 2)}
-                />
-                {item}
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={wheel2Items.includes(item)}
+                    onChange={() => handleCheckboxChange(item, 2)}
+                  />
+                  {item}
+                </label>
                 <button
                   onClick={() => handleDeleteItem(item, 2)}
                   className={styles.deleteButton}

@@ -21,7 +21,7 @@ const SecondWheel: React.FC<WheelProps> = ({ items }) => {
   const [animationStyle, setAnimationStyle] = useState({});
 
   const spinWheel = () => {
-    if (spinning) return;
+    if (spinning || items.length === 0) return; // Prevent spinning if no items
 
     setSpinning(true);
     const randomIndex = Math.floor(Math.random() * items.length);
@@ -47,18 +47,20 @@ const SecondWheel: React.FC<WheelProps> = ({ items }) => {
   };
 
   // Dynamically generate the conic-gradient for the wheel
-  const gradient = items
-    .map((_, index) => {
-      const color =
-        gradientColorsSecondWheel[index % gradientColorsSecondWheel.length];
-      const start = (index * 100) / items.length;
-      const end = ((index + 1) * 100) / items.length;
-      const borderGap = 0.5; // Adjust this value for the border thickness
-      return `${color} ${start}% ${end - borderGap}%, black ${
-        end - borderGap
-      }% ${end}%`;
-    })
-    .join(", ");
+  const gradient = items.length
+    ? items
+        .map((_, index) => {
+          const color =
+            gradientColorsSecondWheel[index % gradientColorsSecondWheel.length];
+          const start = (index * 100) / items.length;
+          const end = ((index + 1) * 100) / items.length;
+          const borderGap = 0.5; // Adjust this value for the border thickness
+          return `${color} ${start}% ${end - borderGap}%, black ${
+            end - borderGap
+          }% ${end}%`;
+        })
+        .join(", ")
+    : "black"; // Default to black if no items
 
   return (
     <div className={styles.wheelContainer}>
@@ -78,7 +80,7 @@ const SecondWheel: React.FC<WheelProps> = ({ items }) => {
       <button
         className={styles.spinButton}
         onClick={spinWheel}
-        disabled={spinning}
+        disabled={spinning || items.length === 0} // Disable button if no items
       >
         {spinning ? "Spinning..." : "Spin the Second Wheel!"}
       </button>

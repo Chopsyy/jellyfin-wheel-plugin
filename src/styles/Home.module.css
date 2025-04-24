@@ -112,9 +112,11 @@
 }
 
 .checkboxItem {
+  user-select: none; /* Prevent text selection */
   display: flex;
   align-items: center;
   margin-bottom: 10px;
+  cursor: pointer; /* Make the entire checkbox item clickable */
 }
 
 .checkboxItem input[type="checkbox"] {
@@ -122,6 +124,10 @@
   width: 20px;
   height: 20px;
   cursor: pointer;
+}
+
+.checkboxItem label {
+  cursor: pointer; /* Ensure the label is clickable */
 }
 
 .checkboxItem button {
