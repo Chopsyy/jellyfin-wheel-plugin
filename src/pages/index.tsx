@@ -27,6 +27,7 @@ const Home = () => {
       !availableItems1.includes(inputValue1)
     ) {
       setAvailableItems1([...availableItems1, inputValue1]);
+      setWheel1Items([...wheel1Items, inputValue1]); // Automatically check the new item
       setInputValue1("");
     } else if (
       wheel === 2 &&
@@ -34,6 +35,7 @@ const Home = () => {
       !availableItems2.includes(inputValue2)
     ) {
       setAvailableItems2([...availableItems2, inputValue2]);
+      setWheel2Items([...wheel2Items, inputValue2]); // Automatically check the new item
       setInputValue2("");
     }
   };
