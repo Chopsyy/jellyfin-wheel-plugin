@@ -84,21 +84,6 @@ const SecondWheel: React.FC<WheelProps> = ({ items }) => {
       >
         {spinning ? "Spinning..." : "Spin the Second Wheel!"}
       </button>
-      <ul className={styles.itemList}>
-        {items.map((item, index) => (
-          <li
-            key={index}
-            style={{
-              color:
-                gradientColorsSecondWheel[
-                  index % gradientColorsSecondWheel.length
-                ],
-            }}
-          >
-            {item}
-          </li>
-        ))}
-      </ul>
     </div>
   );
 };
