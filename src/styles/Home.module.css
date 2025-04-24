@@ -112,10 +112,11 @@
 }
 
 .checkboxItem {
-  user-select: none; /* Prevent text selection */
   display: flex;
-  align-items: center;
+  align-items: center; /* Vertically align checkbox and text */
+  justify-content: space-between; /* Ensure all elements are in one line */
   margin-bottom: 10px;
+  user-select: none; /* Prevent text selection */
   cursor: pointer; /* Make the entire checkbox item clickable */
 }
 

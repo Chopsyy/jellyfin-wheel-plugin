@@ -1,6 +1,6 @@
-import Link from 'next/link';
-import { useDarkMode } from '../context/DarkModeContext';
-import styles from '../styles/Nav.module.css';
+import Link from "next/link";
+import { useDarkMode } from "../context/DarkModeContext";
+import styles from "../styles/Nav.module.css";
 
 const Nav = () => {
   const { darkMode, toggleDarkMode } = useDarkMode();
@@ -11,10 +11,10 @@ const Nav = () => {
         Home
       </Link>
       <Link href="/customize" className={styles.link}>
-        Customize
+        Customize Background
       </Link>
       <button className={styles.toggleButton} onClick={toggleDarkMode}>
-        {darkMode ? '🌙 Dark Mode' : '☀️ Light Mode'}
+        {darkMode ? "🌙 Dark Mode" : "☀️ Light Mode"}
       </button>
     </nav>
   );
