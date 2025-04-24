@@ -80,16 +80,6 @@ const Wheel: React.FC<WheelProps> = ({ items }) => {
       >
         {spinning ? "Spinning..." : "Spin the Wheel!"}
       </button>
-      <ul className={styles.itemList}>
-        {items.map((item, index) => (
-          <li
-            key={index}
-            style={{ color: gradientColors[index % gradientColors.length] }}
-          >
-            {item}
-          </li>
-        ))}
-      </ul>
     </div>
   );
 };

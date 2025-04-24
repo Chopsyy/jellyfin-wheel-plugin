@@ -40,6 +40,15 @@ const Home = () => {
     }
   };
 
+  const handleKeyPress = (
+    event: React.KeyboardEvent<HTMLInputElement>,
+    wheel: number
+  ) => {
+    if (event.key === "Enter") {
+      handleAddItem(wheel);
+    }
+  };
+
   const handleCheckboxChange = (item: string, wheel: number) => {
     if (wheel === 1) {
       setWheel1Items((prev) =>
@@ -67,12 +76,13 @@ const Home = () => {
       <h1 className={styles.title}>Customize Your Wheels</h1>
       <div className={styles.wrapper}>
         <div className={styles.wheelSection}>
-          <h2>Wheel 1</h2>
+          <h2>Genre</h2>
           <div className={styles.inputContainer}>
             <input
               type="text"
               value={inputValue1}
               onChange={(e) => setInputValue1(e.target.value)}
+              onKeyPress={(e) => handleKeyPress(e, 1)}
               placeholder="Add a new item for Wheel 1"
             />
             <button onClick={() => handleAddItem(1)}>Add</button>
@@ -99,12 +109,13 @@ const Home = () => {
         </div>
 
         <div className={styles.wheelSection}>
-          <h2>Wheel 2</h2>
+          <h2>Qualität</h2>
           <div className={styles.inputContainer}>
             <input
               type="text"
               value={inputValue2}
               onChange={(e) => setInputValue2(e.target.value)}
+              onKeyPress={(e) => handleKeyPress(e, 2)}
               placeholder="Add a new item for Wheel 2"
             />
             <button onClick={() => handleAddItem(2)}>Add</button>
