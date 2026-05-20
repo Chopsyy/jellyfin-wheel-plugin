@@ -7,14 +7,16 @@ const Nav = () => {
 
   return (
     <nav className={styles.nav}>
-      <Link href="/" className={styles.link}>
-        Home
-      </Link>
-      <Link href="/customize" className={styles.link}>
-        Customize Background
-      </Link>
+      <div className={styles.linksContainer}>
+        <Link href="/" className={styles.link}>
+          Home
+        </Link>
+        <Link href="/settings" className={styles.link}>
+          Settings
+        </Link>
+      </div>
       <button className={styles.toggleButton} onClick={toggleDarkMode}>
-        {darkMode ? "🌙 Dark Mode" : "☀️ Light Mode"}
+        {darkMode ? "Dark" : "Light"}
       </button>
     </nav>
   );

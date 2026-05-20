@@ -1,172 +1,79 @@
-import { useState, useEffect } from "react";
-import { Wheel } from "../components/Wheel";
-import SecondWheel from "../components/SecondWheel";
+import { useEffect, useState } from "react";
+import { useWheels } from "../hooks/useWheels";
+import { useJellyfin } from "../hooks/useJellyfin";
+import { PALETTES } from "../config/palettes";
+import WheelSection from "../components/WheelSection/WheelSection";
 import styles from "../styles/Home.module.css";
 
+let newWheelCount = 0;
+
 const Home = () => {
-  const [wheels, setWheels] = useState<
-    | {
-        id: number;
-        items: string[];
-        availableItems: string[];
-        inputValue: string;
-      }[]
-    | null
-  >(null);
+  const {
+    wheels,
+    loading,
+    addWheel,
+    deleteWheel,
+    renameWheel,
+    addItem,
+    deleteItem,
+    toggleItem,
+    addJellyfinItems,
+  } = useWheels();
+
+  const { genres, loadingGenres, fetchGenres } = useJellyfin();
+  const [jellyfinBaseUrl, setJellyfinBaseUrl] = useState("");
 
   useEffect(() => {
-    const savedWheels = localStorage.getItem("wheels");
-    if (savedWheels) {
-      try {
-        setWheels(JSON.parse(savedWheels));
-      } catch (error) {
-        console.error("Failed to parse wheels from localStorage:", error);
-        setWheels([
-          { id: 1, items: [], availableItems: [], inputValue: "" },
-          { id: 2, items: [], availableItems: [], inputValue: "" },
-        ]);
-      }
-    } else {
-      setWheels([
-        { id: 1, items: [], availableItems: [], inputValue: "" },
-        { id: 2, items: [], availableItems: [], inputValue: "" },
-      ]);
-    }
+    fetch("/api/jellyfin/config")
+      .then((r) => r.json())
+      .then((cfg) => setJellyfinBaseUrl(cfg.baseUrl || ""))
+      .catch(() => {});
   }, []);
 
-  useEffect(() => {
-    if (wheels !== null) {
-      try {
-        localStorage.setItem("wheels", JSON.stringify(wheels));
-      } catch (error) {
-        console.error("Failed to save wheels to localStorage:", error);
-      }
-    }
-  }, [wheels]);
+  const handleAddWheel = () => {
+    newWheelCount++;
+    addWheel(`Wheel ${newWheelCount}`);
+  };
 
-  if (wheels === null) {
-    return <div>Loading...</div>; // Prevent rendering until wheels are initialized
+  if (loading) {
+    return <div className={styles.loading}>Loading…</div>;
   }
 
-  const handleAddItem = (wheelId: number) => {
-    setWheels((prevWheels) => {
-      if (!prevWheels) return []; // Handle null case
-
-      const updatedWheels = prevWheels.map((wheel) =>
-        wheel.id === wheelId &&
-        wheel.inputValue.trim() &&
-        !wheel.availableItems.includes(wheel.inputValue)
-          ? {
-              ...wheel,
-              availableItems: [...wheel.availableItems, wheel.inputValue],
-              items: [...wheel.items, wheel.inputValue],
-              inputValue: "",
-            }
-          : wheel
-      );
-
-      localStorage.setItem("wheels", JSON.stringify(updatedWheels)); // Save to local storage immediately
-      return updatedWheels;
-    });
-  };
-
-  const handleKeyPress = (
-    event: React.KeyboardEvent<HTMLInputElement>,
-    wheelId: number
-  ) => {
-    if (event.key === "Enter") {
-      handleAddItem(wheelId);
-    }
-  };
-
-  const handleCheckboxChange = (item: string, wheelId: number) => {
-    setWheels((prevWheels) => {
-      if (!prevWheels) return []; // Handle null case
-
-      return prevWheels.map((wheel) =>
-        wheel.id === wheelId
-          ? {
-              ...wheel,
-              items: wheel.items.includes(item)
-                ? wheel.items.filter((i) => i !== item)
-                : [...wheel.items, item],
-            }
-          : wheel
-      );
-    });
-  };
-
-  const handleDeleteItem = (item: string, wheelId: number) => {
-    setWheels((prevWheels) => {
-      if (!prevWheels) return []; // Handle null case
-
-      return prevWheels.map((wheel) =>
-        wheel.id === wheelId
-          ? {
-              ...wheel,
-              availableItems: wheel.availableItems.filter((i) => i !== item),
-              items: wheel.items.filter((i) => i !== item),
-            }
-          : wheel
-      );
-    });
-  };
-
-  const handleInputChange = (value: string, wheelId: number) => {
-    setWheels((prevWheels) => {
-      if (!prevWheels) return []; // Handle null case
-
-      return prevWheels.map((wheel) =>
-        wheel.id === wheelId ? { ...wheel, inputValue: value } : wheel
-      );
-    });
-  };
-
   return (
-    <div className={styles.container}>
-      <h1 className={styles.title}>Customize Your Wheels</h1>
-      <div className={styles.wrapper}>
-        {wheels.map((wheel) => (
-          <div key={wheel.id} className={styles.wheelSection}>
-            <h2>Wheel {wheel.id}</h2>
-            <div className={styles.inputContainer}>
-              <input
-                type="text"
-                value={wheel.inputValue}
-                onChange={(e) => handleInputChange(e.target.value, wheel.id)}
-                onKeyPress={(e) => handleKeyPress(e, wheel.id)}
-                placeholder={`Add a new item for Wheel ${wheel.id}`}
-              />
-              <button onClick={() => handleAddItem(wheel.id)}>Add</button>
-            </div>
-            <div className={styles.checkboxContainer}>
-              {wheel.availableItems.map((item) => (
-                <div key={item} className={styles.checkboxItem}>
-                  <label>
-                    <input
-                      type="checkbox"
-                      checked={wheel.items.includes(item)}
-                      onChange={() => handleCheckboxChange(item, wheel.id)}
-                    />
-                    {item}
-                  </label>
-                  <button
-                    onClick={() => handleDeleteItem(item, wheel.id)}
-                    className={styles.deleteButton}
-                  >
-                    Delete
-                  </button>
-                </div>
-              ))}
-            </div>
-            {wheel.id === 1 ? (
-              <Wheel items={wheel.items} />
-            ) : (
-              <SecondWheel items={wheel.items} />
-            )}
-          </div>
-        ))}
+    <div className={styles.page}>
+      <div className={styles.header}>
+        <h1 className={styles.title}>Wheel Spinner</h1>
+        <button className={styles.addButton} onClick={handleAddWheel}>
+          + Add Wheel
+        </button>
       </div>
+      {wheels.length === 0 ? (
+        <p className={styles.empty}>
+          No wheels yet. Click <strong>+ Add Wheel</strong> to get started.
+        </p>
+      ) : (
+        <div className={styles.wheels}>
+          {wheels.map((wheel) => (
+            <WheelSection
+              key={wheel.id}
+              wheel={wheel}
+              palette={PALETTES[wheel.paletteIndex % PALETTES.length]}
+              jellyfinBaseUrl={jellyfinBaseUrl}
+              jellyfinGenres={genres}
+              loadingGenres={loadingGenres}
+              onDelete={() => deleteWheel(wheel.id)}
+              onRename={(name) => renameWheel(wheel.id, name)}
+              onAddItem={(label) => addItem(wheel.id, label)}
+              onDeleteItem={(itemId) => deleteItem(wheel.id, itemId)}
+              onToggleItem={(itemId, enabled) =>
+                toggleItem(wheel.id, itemId, enabled)
+              }
+              onFetchGenres={fetchGenres}
+              onAddJellyfinItems={(items) => addJellyfinItems(wheel.id, items)}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 };
