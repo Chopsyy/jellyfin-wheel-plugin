@@ -12,16 +12,23 @@ const DEFAULTS: DBSchema = {
 
 // ── Upstash Redis (production on Vercel) ────────────────────────────────────
 
-async function redisRead(): Promise<DBSchema> {
+async function getRedis() {
+  // Vercel's Upstash integration injects KV_REST_API_URL and KV_REST_API_TOKEN
   const { Redis } = await import("@upstash/redis");
-  const redis = Redis.fromEnv();
+  return new Redis({
+    url: process.env.KV_REST_API_URL!,
+    token: process.env.KV_REST_API_TOKEN!,
+  });
+}
+
+async function redisRead(): Promise<DBSchema> {
+  const redis = await getRedis();
   const data = await redis.get<DBSchema>("db");
   return data ? { ...DEFAULTS, ...data } : { ...DEFAULTS };
 }
 
 async function redisWrite(data: DBSchema): Promise<void> {
-  const { Redis } = await import("@upstash/redis");
-  const redis = Redis.fromEnv();
+  const redis = await getRedis();
   await redis.set("db", data);
 }
 
@@ -47,7 +54,7 @@ function fileWrite(data: DBSchema): void {
 // ── Public API ──────────────────────────────────────────────────────────────
 
 const useRedis = !!(
-  process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN
+  process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN
 );
 
 export async function readDB(): Promise<DBSchema> {
