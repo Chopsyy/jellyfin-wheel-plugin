@@ -1,9 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { readDB, writeDB } from "../../../../lib/db";
 
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   const wheelId = parseInt(req.query.id as string, 10);
-  const db = readDB();
+  const db = await readDB();
   if (!db.wheels.find((w) => w.id === wheelId)) {
     return res.status(404).json({ error: "Wheel not found" });
   }
@@ -37,7 +40,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
           added.push(item);
         }
       }
-      writeDB(db);
+      await writeDB(db);
       return res.status(201).json(added);
     }
 
@@ -54,7 +57,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       source: "manual" as const,
     };
     db.items.push(item);
-    writeDB(db);
+    await writeDB(db);
     return res.status(201).json(item);
   }
 
@@ -63,7 +66,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     const idx = db.items.findIndex((i) => i.id === itemId && i.wheelId === wheelId);
     if (idx === -1) return res.status(404).json({ error: "Item not found" });
     db.items[idx] = { ...db.items[idx], enabled };
-    writeDB(db);
+    await writeDB(db);
     return res.json(db.items[idx]);
   }
 
@@ -72,7 +75,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     const idx = db.items.findIndex((i) => i.id === itemId && i.wheelId === wheelId);
     if (idx === -1) return res.status(404).json({ error: "Item not found" });
     db.items.splice(idx, 1);
-    writeDB(db);
+    await writeDB(db);
     return res.status(204).end();
   }
 

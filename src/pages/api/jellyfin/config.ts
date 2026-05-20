@@ -6,7 +6,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const db = readDB();
+  const db = await readDB();
 
   if (req.method === "GET") {
     return res.json({
@@ -19,7 +19,7 @@ export default async function handler(
     const { baseUrl, apiKey } = req.body as { baseUrl: string; apiKey: string };
     db.settings.jellyfinBaseUrl = baseUrl?.trim() || "";
     db.settings.jellyfinApiKey = apiKey?.trim() || "";
-    writeDB(db);
+    await writeDB(db);
     return res.json({ ok: true });
   }
 

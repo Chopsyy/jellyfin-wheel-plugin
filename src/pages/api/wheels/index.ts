@@ -2,8 +2,11 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { readDB, writeDB } from "../../../lib/db";
 import { PALETTES } from "../../../config/palettes";
 
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
-  const db = readDB();
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
+  const db = await readDB();
 
   if (req.method === "GET") {
     const wheels = db.wheels.map((w) => ({
@@ -26,7 +29,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     };
     db.wheels.push(wheel);
     db.nextWheelId++;
-    writeDB(db);
+    await writeDB(db);
     return res.status(201).json({ ...wheel, items: [] });
   }
 

@@ -7,7 +7,7 @@ export default async function handler(
   res: NextApiResponse
 ) {
   if (req.method !== "GET") return res.status(405).end();
-  const db = readDB();
+  const db = await readDB();
   const baseUrl = db.settings.jellyfinBaseUrl;
   const apiKey = db.settings.jellyfinApiKey;
   if (!baseUrl || !apiKey) {
